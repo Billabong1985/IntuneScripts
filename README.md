@@ -1,2 +1,2 @@
-# IntuneScripts
-Scripts for Intune deployments
+# Intune Scripts
+Assorted scripts for Intune deployments
