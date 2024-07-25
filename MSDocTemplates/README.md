@@ -1,6 +1,6 @@
-This Script is designed to copy MS Office tmeplate files into the user's default personal custom templates folder, as such when packaged as a Win32 App, it should be run in the user context. It has been written for packaging and distributing with Intune, but should work for other deployment methods with minimal adjustments. 
+This Script is designed to copy MS Office tmeplate files into the user's default personal custom templates folder, as such when packaged as a Win32 App, it should be run in the user context. It has been written for packaging and distributing with Intune, but should work for other deployment methods with minimal adjustments.
 
-Intune detection script is included to read the created log file and check the version number printed in it
+Intune detection script is included to read the created log file and check for the success text and matching version number
 
 All required template files should be dropped in the \Templates\Current folder
 
