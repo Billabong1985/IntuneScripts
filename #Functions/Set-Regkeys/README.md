@@ -12,11 +12,17 @@ Optionally a log file can be passed using the -LogResults parameter
 ################## Example 1 ###################
 
 If(!(Get-Module -Name Set-Regkeys))
+
     {
+
     Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
+    
     }
+
 $logfile = C:\Software\Application\LogFile.log
+
 $csvfile = "$PSScriptRoot\regkeys.csv"
+
 Set-Regkeys -CsvImport $csvfile -LogResults $logfile
 
 ################################################
@@ -24,17 +30,29 @@ Set-Regkeys -CsvImport $csvfile -LogResults $logfile
 ################## Example 2 ###################
 
 If(!(Get-Module -Name Set-Regkeys))
+
     {
+    
     Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
+    
     }
+
 If($variable = 1)
+
    {
+   
    $csvfile = "$PSScriptRoot\regkeys1.csv"
+   
    }
+
 If($variable = 2)
+
    {
+   
    $csvfile = "$PSScriptRoot\regkeys2.csv"
+   
    }
+
 Set-Regkeys -CsvImport $csvfile
 
 ################################################
