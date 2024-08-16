@@ -8,7 +8,7 @@ The CSV file name to be used should be defined in the script and passed to the f
 
 Optionally, a log file can be passed using the -LogResults parameter
 
-
+<br>
 Example 1
 
     If(!(Get-Module -Name Set-Regkeys))
