@@ -1,0 +1,6 @@
+﻿Key,Name,Type,Value
+HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced,TaskbarAl,DWORD,0
+HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced,TaskbarMn,DWORD,0
+HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced,TaskbarDa,DWORD,0
+HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced,ShowTaskViewButton,DWORD,0
+HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced,Start_IrisRecommendations,DWORD,0
