@@ -1,0 +1,8 @@
+﻿Key,Name,Type,Value
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown,bToggleFTE,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown,bAcroSuppressUpsell,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices,bToggleAdobeDocumentServices,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices,bToggleAdobeReview,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices,bTogglePrefsSync,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cSharePoint,bDisableSharePointFeatures,DWORD,1
+HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cWebmailProfiles,bDisableWebmail,DWORD,1
