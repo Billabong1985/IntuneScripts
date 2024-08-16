@@ -1,7 +1,8 @@
 $logfile = "C:\Software\StartMenu\StartMenuConfig.log"
 $failure = "incorrect value","not present"
+$status = Get-Content $logfile | select-string ($failure)
 
-if(((Get-Content $logfile) | select-string ($failure)) -eq $null)
+if($null -eq $status)
     {
     write-host Success
     }
