@@ -8,7 +8,7 @@ The CSV file name to be used should be defined in the script and passed to the f
 
 Optionally a log file can be passed using the -LogResults parameter
 
-    #Example 1
+#Example 1
     If(!(Get-Module -Name Set-Regkeys))
         {
         Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
@@ -17,9 +17,8 @@ Optionally a log file can be passed using the -LogResults parameter
     $csvfile = "$PSScriptRoot\regkeys.csv"
     Set-Regkeys -CsvImport $csvfile -LogResults $logfile
 
-fdsfsdf
 
-    #Example 2
+#Example 2
     If(!(Get-Module -Name Set-Regkeys))
         {
         Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
