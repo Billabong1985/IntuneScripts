@@ -17,6 +17,7 @@ Optionally a log file can be passed using the -LogResults parameter
     $csvfile = "$PSScriptRoot\regkeys.csv"
     Set-Regkeys -CsvImport $csvfile -LogResults $logfile
 
+
     #Example 2
     If(!(Get-Module -Name Set-Regkeys))
         {
