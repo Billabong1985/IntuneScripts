@@ -1,58 +1,107 @@
-#Define the package file
-$package = "$PSScriptRoot\AcroRdrDC_MUI.exe"
+#Define the app display name, use wildcards to catch any minor changes to name between versions
+$AppName = "*Adobe*Acrobat*"
+#Define the package version number
+[version]$PackageVersion = "24.2.21005"
 
-#Get the version number of Adobe if it is already installed
-[version]$currentversion = ((Get-Package | Where-Object {$_.Name -like "*Adobe*Acrobat*" -and $_.Name -notlike "*Language*"}).version)
-#Get the version number of the package file as a string, remove any trailing .0 and convert to [version] format
-[string]$packageversion = (get-item -path $package | ForEach-Object {$_.VersionInfo} | Select-Object FileVersion).FileVersion
-if($packageversion.EndsWith(".0")) 
+#Get app details from registry, add additional Where-Object qualifiers if more than one entry matches the display name
+$AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+$AppNameReg = $AppReg | Get-ItemProperty | Where-Object {($_.DisplayName -like $AppName) -and ($_.DisplayName -notlike "*Language*")}
+
+#Define the currently installed version number
+[version]$CurrentVersion = ($AppNameReg).DisplayVersion
+
+#Check whether the installed version is greater than or equal to the package and set variable
+if($currentversion -ge $packageversion)
     {
-    $packageversion = $packageversion.TrimEnd(".0")
+    $installed = "True"
     }
-[version]$packageversion = "$packageversion"
-
-#Define log folder and file
-$logfolder = "C:\Software\AcrobatReader"
-$logfile = "$logfolder\AcroRdrInstallConfig.log"
-
-#Check if log file exists, clear content if it does
-If(test-path $logfile)
+else
     {
-    Clear-Content $logfile
-    }
-#Check if log folder exists, create it if not
-If(!(test-path $logfolder))
-    {
-    New-Item -ItemType Directory -Force -Path $logfolder
-    }   
-#Check if log file exists, create it if not
-If(!(test-path $logfile))
-    {
-    New-Item $logfile
+    $installed = "False"
     }
 
-Start-Transcript -Path $logfile
-
-#Install Acrobat Reader if it is not already installed or current version is lower than package version
-if(($null -eq $currentversion) -or ($currentversion -lt $packageversion))
+#Check whether desktop shortcut has been deleted and set variable
+if(!(test-path "C:\Users\Public\Desktop\Adobe Acrobat.lnk"))
     {
-    start-process $package -wait -ArgumentList "/sAll /rs /msi EULA_ACCEPT=YES"
+    $shortcutdeleted = "True"
+    }
+else
+    {
+    $shortcutdeleted = "False"
     }
 
-#Delete desktop shortcut if found
-if(Test-Path "C:\Users\Public\Desktop\Adobe Acrobat.lnk")
+#Check whether all customisation registry keys are present and set correctly
+#Create array of reg keys
+$regkeys = @(
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown"
+    Name = "bToggleFTE"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown"
+    Name = "bAcroSuppressUpsell"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
+    Name = "bToggleAdobeDocumentServices"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
+    Name = "bToggleAdobeReview"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
+    Name = "bTogglePrefsSync"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cSharePoint"
+    Name = "bDisableSharePointFeatures"
+    Type = "DWORD"
+    Value = "1"
+    }
+[pscustomobject]@{
+    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cWebmailProfiles"
+    Name = "bDisableWebmail"
+    Type = "DWORD"
+    Value = "1"
+    }
+    )
+
+#Count how many reg keys are in the array
+$keycount = $regkeys.Count
+#Set the success count to an initial value of 0
+$successcount = 0
+#For each key value in the array, compare to the system registry and add 1 to the count if it matches
+foreach($reg in $regkeys)
     {
-    Remove-Item "C:\Users\Public\Desktop\Adobe Acrobat.lnk"
+        if(((get-itemproperty -path $reg.key -name $reg.name -ErrorAction SilentlyContinue).($reg.name)) -eq $reg.value)
+        {
+        $successcount ++
+        }
     }
 
-#Import the registry editing function if it is not already loaded
-If(!(Get-Module -Name Set-Regkeys))
+#If the success count matches the count of keys in the array, set variable as true
+if($successcount -eq $keycount)
     {
-    Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
+    $custom = "True"
     }
-#Define the CSV file to import registry settings from
-$csvfile = "$PSScriptRoot\regkeys.csv"
-#Run the function, passing the defined CSV file
-Set-Regkeys -CsvImport $csvfile
+else
+    {
+    $custom = "False"
+    }
 
-Stop-Transcript
+#If no conditions are False, output a success result
+if("False" -notin @($installed,$shortcutdeleted,$custom))
+    {
+    Write-Host "Success"
+    }
