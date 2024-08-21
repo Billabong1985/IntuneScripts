@@ -21,7 +21,7 @@ if($Uninstall -match $MSI)
     {
     $Split = ($Uninstall -split '{') | Where-Object { $_.Trim() -ne "" }
     $Arguments = "{"+$Split[1]
-    Start-Process $MSI -ArgumentList "/x $Arguments /qn"
+    Start-Process $MSI -Wait -ArgumentList "/x $Arguments /qn"
     }
 else 
     {
