@@ -1,7 +1,16 @@
-﻿#Check whether the installed version is greater than or equal to the package and set variable
-[version]$currentversion = ((Get-Package | Where-Object {$_.Name -like "*Adobe*Acrobat*" -and $_.Name -notlike "*Language*"}).version)
-[version]$packageversion = "24.2.20759"
+#Define the app display name, use wildcards to catch any minor changes to name between versions
+$AppName = "*Adobe*Acrobat*"
+#Define the package version number
+[version]$PackageVersion = "24.2.21005"
 
+#Get app details from registry, add additional Where-Object qualifiers if more than one entry matches the display name
+$AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+$AppNameReg = $AppReg | Get-ItemProperty | Where-Object {($_.DisplayName -like $AppName) -and ($_.DisplayName -notlike "*Language*")}
+
+#Define the currently installed version number
+[version]$CurrentVersion = ($AppNameReg).DisplayVersion
+
+#Check whether the installed version is greater than or equal to the package and set variable
 if($currentversion -ge $packageversion)
     {
     $installed = "True"
