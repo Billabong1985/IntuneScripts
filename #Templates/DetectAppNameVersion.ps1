@@ -7,6 +7,12 @@ $AppName = "*App*Name*"
 $AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 $AppNameReg = $AppReg | Get-ItemProperty | Where-Object {$_.DisplayName -like $AppName }
 
+#If multiple matching entries are still found (i.e. multiple versions or components of the app installed), select the one with the highest version number
+if(($AppNameReg).count -gt 1)
+    {
+    $AppNameReg = ($AppNameReg | Sort-Object -Descending {($AppNameReg).DisplayVersion})  | Select-Object -First 1
+    }
+
 #Define the currently installed version number
 [version]$CurrentVersion = ($AppNameReg).DisplayVersion
 
