@@ -1,7 +1,7 @@
 #Define the App's display name, use wildcards to catch any minor changes to name between versions
 $AppName = "*App*Name*"
 
-#Get the uninstall string(s) for the app
+#Get the uninstall string(s) for the app, add additional Where-Object qualifiers if more than one app matches the display name
 $AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 $AppNameReg = $AppReg | Get-ItemProperty  | Where-Object {$_.DisplayName -like $AppName }
 
