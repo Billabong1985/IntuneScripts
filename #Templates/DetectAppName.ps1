@@ -31,6 +31,9 @@ if($AppNameReg.count -eq 1)
 if($AppNameReg.count -gt 1)
     {
     $LogFolder = "C:\Software\AppDetection"
+    if (!(Test-Path $LogFolder)) {
+        New-Item -ItemType Directory -Force -Path $logfolder
+    }
     $FileName = (($RegFilters).String[0]) -Replace '["*]',''
     $LogFile = "$LogFolder\$FileName.log"
     $DateTime = (Get-Date)
