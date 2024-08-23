@@ -24,7 +24,7 @@ $AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Un
 $AppNameReg = @($AppReg | Get-ItemProperty | Where-Object -FilterScript $AllFiltersScript)
 
 #If 1 app is returned, compare it's version number with the package version
-if (($AppNameReg).count -eq 1) {
+if ($AppNameReg.count -eq 1) {
     #Define the currently installed version number
     [version]$CurrentVersion = ($AppNameReg).DisplayVersion
     #Check if the currently installed version is greater than or equal to the package version, write output if it is and exit 0
@@ -35,7 +35,7 @@ if (($AppNameReg).count -eq 1) {
 }
 
 #If more than 1 app is returned from registry, write a log file with the details for review and exit 1
-if (($AppNameReg).count -gt 1) {
+if ($AppNameReg.count -gt 1) {
     $LogFolder = "C:\Software\AppVersionDetection"
     if (!(Test-Path $LogFolder)) {
         New-Item -ItemType Directory -Force -Path $logfolder
