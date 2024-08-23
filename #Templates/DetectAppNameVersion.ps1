@@ -2,7 +2,7 @@
 [version]$PackageVersion = "1.0.0"
 
 #Define the app properties to filter from registry use partial wildcards to catch any minor variations on display names
-#Unused properties should be set to '' or $null to exclude them from the filter string, or delete the pscustomobject line
+#Unused properties should be set to "" or $null to exclude them from the filter string, or delete the pscustomobject line
 #In most cases the DisplayName -like property will be sufficient, additional properties can be used for apps that can't be singled out with that alone
 $RegFilters = @(
     [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "*App*Name*" }
