@@ -24,13 +24,13 @@ $AppNameReg = @($AppReg | Get-ItemProperty | Where-Object -FilterScript $AllFilt
 foreach($App in $AppNameReg)
     { 
     #Set the variable to the quiet uninstall string if it exists, otherwise use standard uninstall string
-    if($null -ne $AppNameReg.QuietUninstallString)
+    if($null -ne $App.QuietUninstallString)
         {
-        $Uninstall = $AppNameReg.QuietUninstallString
+        $Uninstall = $App.QuietUninstallString
         }
     else
         {
-        $Uninstall = $AppNameReg.UninstallString
+        $Uninstall = $App.UninstallString
         }
 
     #Split the string to define arguments then execute
