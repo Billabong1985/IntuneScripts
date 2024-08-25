@@ -5,7 +5,7 @@ $RegFilters = @(
     [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "*App*Name*" }
     [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "" }
     [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = "*Publisher*" }
-    [pscustomobject]@{ Property = "InstallLocation"; Operator = "Like"; String = "" }
+    [pscustomobject]@{ Property = "InstallLocation"; Operator = "Eq"; String = "" }
 )
 
 #Create a filter format template
