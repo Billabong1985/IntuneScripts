@@ -1,4 +1,4 @@
-﻿#Define the package version numbers
+#Define the package version numbers
 $PackageVersions = @("18.20.2", "20.12.2")
 $PackageVersions = $PackageVersions.ForEach{ [version]$_ }
 #Define the app properties to filter from registry use partial wildcards to catch any minor variations on display names
@@ -25,18 +25,18 @@ $AppNameReg = @($AppReg | Get-ItemProperty | Where-Object -FilterScript $AllFilt
 
 #If no more apps are returned than the number of specified versions, compare version numbers with the corresponding package versions
 if (($AppNameReg.count -gt 0) -and ($AppNameReg.count -le $PackageVersions.count)) {
+    #Create an array to record up to date versions
+    $InstallComplete = @()
     foreach ($App in $AppNameReg) {
-        #Create an array to record up ot date versions
-        $InstallComplete = @()
         #Define the currently installed version number
         [version]$CurrentVersion = $App.DisplayVersion
         $CurrentVersionMajor = $CurrentVersion.Major
         #Find the version in the $PackageVersions array that has matching Major version
         $MatchingAppVersion = $PackageVersions | Where-Object { $_.Major -eq $CurrentVersionMajor }
-        if (($null -ne $MatchingVersion) -and ($CurrentVersion -ge $MatchingAppVersion)) {
+        if (($null -ne $MatchingAppVersion) -and ($CurrentVersion -ge $MatchingAppVersion)) {
             $InstallComplete += [PSCustomObject]@{ Version = $MatchingAppVersion; Installed = "True" }
             }
-        if (($null -ne $MatchingVersion) -and ($CurrentVersion -lt $MatchingAppVersion)) {
+        if (($null -ne $MatchingAppVersion) -and ($CurrentVersion -lt $MatchingAppVersion)) {
             $InstallComplete += [PSCustomObject]@{ Version = $MatchingAppVersion; Installed = "False" }
             }
         }
