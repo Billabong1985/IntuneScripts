@@ -1,5 +1,9 @@
-﻿#Define the path the MSI files are stored in under the scriptroot. This can be root level but a subfolder containing only install files is preferable
+#Define the path the MSI files are stored in under the scriptroot. This can be root level but a subfolder containing only install files is preferable
 $FilePath = "$PSScriptRoot\MSI"
+
+#Set minimum safe version(s)
+$SafeVersions = @("18.18.2", "20.8.1")
+$SafeVersions = $SafeVersions.ForEach{ [version]$_ }
 
 #Define the app properties to filter from registry. Use partial wildcards to catch any minor variations on display names
 $RegFilters = @(
@@ -10,14 +14,14 @@ $RegFilters = @(
 )
 
 #Pull verion numbers from MSI files, create PSCustomObjects array to hold corresponding filename, display version and [version]
-$FileNames = @((Get-ChildItem -Path $FilePath -Filter *.* -Recurse | Where-Object {($_.Extension -eq ".msi")}).Name)
+$FileNames = @((Get-ChildItem -Path $FilePath -Filter *.* -Recurse | Where-Object { ($_.Extension -eq ".msi") }).Name)
 $DisplayVersions = @()
 $PackageObjects = @()
-foreach($File in $FileNames) {
+foreach ($File in $FileNames) {
     $FileVersion = (Get-MSIProperty productversion -Path $FilePath\$File).value
     $DisplayVersions += $FileVersion
     $PackageObjects += [PSCustomObject]@{ FilePath = "$FilePath\$File"; DisplayVersion = $FileVersion; PackageVersion = [version]$FileVersion }  
-    }
+}
 
 #Create a filter format template
 $FilterTemplate = '$_.{0} -{1} "{2}"'
@@ -36,10 +40,11 @@ foreach ($App in $AppNameReg) {
     #Define the currently installed version number
     [version]$CurrentVersion = $App.DisplayVersion
     #Find an object in the Package array with a matching Major version number
-    $MatchingPackage = $PackageObjects | Where-Object { $_.PackageVersion.Major -eq $CurrentVersion.Major}
+    $MatchingPackage = $PackageObjects | Where-Object { $_.PackageVersion.Major -eq $CurrentVersion.Major }
+    $MatchingSafeVersion = $SafeVersions | Where-Object { $_.Major -eq $CurrentVersion.Major }
 
-    #If the current version is less than the corresponding Package version, install the package
-    if($CurrentVersion -lt $MatchingPackage.PackageVersion) {
+    #If the current version is less than the corresponding safe version, install the package
+    if ($CurrentVersion -lt $MatchingSafeVersion) {
         $MSI = $MatchingPackage.FilePath
         start-process msiexec.exe -Wait -ArgumentList "/i $MSI /qn"
     }
