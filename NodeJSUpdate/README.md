@@ -4,8 +4,8 @@ Updates were pushed through Intune so needed a requirement script to only target
 
 DetectNodeJSVulnerability.ps1 checks registry for currently installed versions and compares to an array of 'Safe' versions based on major version number to determine if a machine has any versions that need updating
 
-InstallNodejs.ps1 creates an array of filenames and versions from MSI files placed in a subfolder, checks registry for any installed versions and matches them to the respective safe version and package based on major version number, then installs the matching package for any that are an older version than the matched safe version
+InstallNodejs.ps1 creates an array of filenames and versions from MSI files placed in a subfolder, checks registry for any installed versions and matches them to the respective safe version and package based on major version number, then installs the matching package for any that are currently an older version than the matched safe version
 
 DetectNodejsVersion.ps1 checks registry for currently installed versions and compares them to an array of verions matched to the MSI files used in the install script, based on major version number, then writes a true or false value for each matched install to an object array. This array then returns a success if no false values are present
 
-The scripts could easily be changed to work with any other similar situation of another piece of software that may have users running multiple different versions and a blanket upgrade isn't suitable, by simply changing the registry search criteria
+The scripts could easily be changed to work with any other similar situation of another piece of software that may have users running multiple different versions and a blanket upgrade isn't suitable, by simply changing the registry search criteria. InstallNodejs.ps1 can be changed to update installed software based on the nested package versions rather than the 'Safe' versions by simply changing line 47 from **if ($CurrentVersion -lt $MatchingSafeVersion) {** to **if ($CurrentVersion -lt $MatchingPackage.PackageVersion) {**, making lines 4-6 and 44 redundant
