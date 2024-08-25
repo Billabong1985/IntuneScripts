@@ -11,6 +11,7 @@ DetectNodejsVersion.ps1 checks registry for currently installed versions and com
 The scripts could easily be changed to work with any other similar situation of another piece of software that may have users running multiple different versions and a blanket upgrade isn't suitable, by simply changing the registry search criteria. InstallNodejs.ps1 can be changed to update installed software based on the nested package versions rather than the 'Safe' versions by simply changing line 47 from 
 
 **if ($CurrentVersion -lt $MatchingSafeVersion) {**
+
 to
 
 **if ($CurrentVersion -lt $MatchingPackage.PackageVersion) {**
