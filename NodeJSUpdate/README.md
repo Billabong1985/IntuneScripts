@@ -8,4 +8,8 @@ InstallNodejs.ps1 creates an array of filenames and versions from MSI files plac
 
 DetectNodejsVersion.ps1 checks registry for currently installed versions and compares them to an array of verions matched to the MSI files used in the install script, based on major version number, then writes a true or false value for each matched install to an object array. This array then returns a success if no false values are present
 
-The scripts could easily be changed to work with any other similar situation of another piece of software that may have users running multiple different versions and a blanket upgrade isn't suitable, by simply changing the registry search criteria. InstallNodejs.ps1 can be changed to update installed software based on the nested package versions rather than the 'Safe' versions by simply changing line 47 from **if ($CurrentVersion -lt $MatchingSafeVersion) {** to **if ($CurrentVersion -lt $MatchingPackage.PackageVersion) {**, making lines 4-6 and 44 redundant
+The scripts could easily be changed to work with any other similar situation of another piece of software that may have users running multiple different versions and a blanket upgrade isn't suitable, by simply changing the registry search criteria. InstallNodejs.ps1 can be changed to update installed software based on the nested package versions rather than the 'Safe' versions by simply changing line 47 from 
+**if ($CurrentVersion -lt $MatchingSafeVersion) {**
+to
+**if ($CurrentVersion -lt $MatchingPackage.PackageVersion) {**
+This change makes lines 4-6 and 44 redundant
