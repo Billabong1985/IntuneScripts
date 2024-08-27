@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = Get-AppReg -AppNameLike "*node.js*"
+$AppNameReg = @(Get-AppReg -AppNameLike "*node.js*")
 
 #Define the path the MSI files are stored in under the scriptroot. This can be root level but a subfolder containing only install files is preferable
 $FilePath = "$PSScriptRoot\MSI"
