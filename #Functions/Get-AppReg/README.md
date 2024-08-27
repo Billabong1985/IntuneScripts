@@ -1,4 +1,4 @@
-This function pulls all app details from the following registry keys and outputs the results
+This function pulls app details from the following registry keys and outputs the results
 HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 <br>
