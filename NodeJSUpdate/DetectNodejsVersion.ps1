@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = Get-AppReg -AppNameLike "*node.js*"
+$AppNameReg = @(Get-AppReg -AppNameLike "*node.js*")
 
 #Define the package version numbers
 $PackageVersions = @("18.20.2", "20.12.2")
