@@ -10,10 +10,13 @@ Like and NotLike parameters can use wildcards to cover any uncertainties or vari
 -AppNameNotLike is configured to accept a single value or an array of strings
 
 Example 1
+
     Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*"
 
 Example 2
+
     Get-AppReg -AppNameLike "*Dropbox" -AppNameNotLike "*Helper*"
 
 Example 3
+
     Get-AppReg -AppNameLike "*Acrobat*Acrobat*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*")
