@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*")
+$AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
 
 #Use a foreach loop to uninstall all versions of the app if more than one result is returned
 foreach($App in $AppNameReg)
