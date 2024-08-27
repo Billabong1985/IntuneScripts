@@ -8,40 +8,24 @@
 ###################################################################
 
 #Set variables
-$winver = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
-$logfolder = "C:\Software\StartMenu"
-$logfile = "$logfolder\StartMenuConfig.log"
+$WinVer = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+$LogFolder = "C:\Software\StartMenu"
+$LogFile = "$LogFolder\StartMenuConfig.log"
 
-#Check if log file exists, clear content if it does
-If(test-path $logfile)
-    {
-    Clear-Content $logfile
-    }
-#Check if log folder exists, create it if not
-If(!(test-path $logfolder))
-    {
-    New-Item -ItemType Directory -Force -Path $logfolder
-    }   
-#Check if log file exists, create it if not
-If(!(test-path $logfile))
-    {
-    New-Item $logfile
-    }
+#Clear content from the log folder if it already exists
+Clear-Content $LogFile -ErrorAction Ignore
 
 #Define the CSV file to pass to the function if Windows version is 10
-if ($winver -like '*Windows 10*')
-    {
-    $csvfile = "$PSScriptRoot\win10regkeys.csv"
-    }
+if ($WinVer -like '*Windows 10*') {
+    $CsvFile = "$PSScriptRoot\win10regkeys.csv"
+}
 #Define the CSV file to pass to the function if Windows version is 11
-if ($winver -like '*Windows 11*')
-    {
-    $csvfile = "$PSScriptRoot\win11regkeys.csv"
-    }
+if ($WinVer -like '*Windows 11*') {
+    $CsvFile = "$PSScriptRoot\win11regkeys.csv"
+}
 
 #Import the registry editing function and pass the defined csv and log files to it
-If(!(Get-Module -Name Set-Regkeys))
-    {
+If (!(Get-Module -Name Set-Regkeys)) {
     Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
-    }
-Set-Regkeys -CsvImport $csvfile -LogResults $logfile
+}
+Set-RegKeys -CsvImport $CsvFile -LogResults $LogFile
