@@ -1,16 +1,16 @@
 This function pulls all app details from the following registry keys and outputs the results
 HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-
+<br>
 Use the following parameters to single out required app(s)
 
 [Mandatory] `-AppNameLike`
 
 [Optional] `-AppNameNotLike`, `-PublisherLike`
-
+<br>
 -Like and -NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
 -AppNameNotLike is configured to accept a single value or an array of strings
-
+<br>
 Example 1
 
     Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*"
