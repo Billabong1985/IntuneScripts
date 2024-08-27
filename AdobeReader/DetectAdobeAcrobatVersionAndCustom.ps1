@@ -40,7 +40,7 @@ $LogFolder = "C:\Software\AppVersionDetection"
 if (!(Test-Path $LogFolder)) {
     New-Item -ItemType Directory -Force -Path $logfolder
 }
-$FileName = (($RegFilters).String[0]) -Replace "[*]", ""
+$FileName = (($AppNameReg).DisplayName[0]) -Replace "[*]", ""
 $LogFile = "$LogFolder\$FileName.log"
 Clear-Content $LogFile -ErrorAction Ignore
 
