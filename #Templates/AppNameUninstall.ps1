@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function. -AppNameNotLike is set up as an array and can accept multiple strings
-$AppNameReg = Get-AppReg -AppNameLike "*App*Name*" -AppNameNotLike @("*Exclude*","*Exclude2*") -PublisherLike "*Publisher*"
+$AppNameReg = @(Get-AppReg -AppNameLike "*App*Name*" -AppNameNotLike @("*Exclude*","*Exclude2*") -PublisherLike "*Publisher*")
 
 #Use a foreach loop to uninstall all versions of the app if more than one result is returned
 foreach ($App in $AppNameReg) { 
