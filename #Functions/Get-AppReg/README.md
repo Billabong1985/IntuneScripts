@@ -6,7 +6,7 @@ Use the following parameters to single out required app(s)
 [Mandatory] `-AppNameLike`
 [Optional] `-AppNameNotLike`, `-PublisherLike`
 
-Like and NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
+-Like and -NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
 -AppNameNotLike is configured to accept a single value or an array of strings
 
 Example 1
