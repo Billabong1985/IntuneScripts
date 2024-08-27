@@ -3,10 +3,17 @@ HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 
 Use the following parameters to single out required app(s)
-
 [Mandatory] `-AppNameLike`
+[Optional] `-AppNameNotLike`, `-PublisherLike`
 
-[Optional] `-AppNameNotLike`, `-PublisherLike`, `-InstallPathEq`
+Like and NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
+-AppNameNotLike is configured to accept a single value or an array of strings
 
-Like and NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name, 
-e.g. `-AppNameLike "*Adobe*Acrobat*"`
+Example 1
+    Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*"
+
+Example 2
+    Get-AppReg -AppNameLike "*Dropbox" -AppNameNotLike "*Helper*"
+
+Example 3
+    Get-AppReg -AppNameLike "*Acrobat*Acrobat*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*")
