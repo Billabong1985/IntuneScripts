@@ -1,19 +1,20 @@
+#Create the function
 function Get-AppReg {
-    #Define the parameters
+    #Define the Parameters
     param(
         [Parameter(Mandatory = $true)][string]$AppNameLike,
-        [Parameter(Mandatory = $false)][string]$AppNameNotLike,
-        [Parameter(Mandatory = $false)][string]$PublisherLike,
-        [Parameter(Mandatory = $false)][string]$InstallPathEq
+        [Parameter(Mandatory = $false)][string[]]$AppNameNotLike,
+        [Parameter(Mandatory = $false)][string]$PublisherLike
     )
 
     #Create an array of objects for the registry search
     $RegFilters = @(
-        [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "$AppNameLike" }
-        [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$AppNameNotLike" }
-        [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = "$PublisherLike" }
-        [pscustomobject]@{ Property = "InstallLocation"; Operator = "Eq"; String = "$InstallPathEq" }
+        [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = $AppNameLike }
+        [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = $PublisherLike }
     )
+    foreach($Pattern in $AppNameNotLike) {
+        $RegFilters += [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$Pattern" }
+    }
 
     #Create a filter format template
     $FilterTemplate = '$_.{0} -{1} "{2}"'
