@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function. -AppNameNotLike is set up as an array and can accept multiple strings
-$AppNameReg = Get-AppReg -AppNameLike "*App*Name*" -AppNameNotLike @("*Exclude*","*Exclude2*") -PublisherLike "*Publisher*"
+$AppNameReg = @(Get-AppReg -AppNameLike "*App*Name*" -AppNameNotLike @("*Exclude*","*Exclude2*") -PublisherLike "*Publisher*")
 
 #If 1 app is returned, write output and exit 0
 if ($AppNameReg.count -eq 1) {
