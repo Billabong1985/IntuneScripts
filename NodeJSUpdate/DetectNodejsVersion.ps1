@@ -68,7 +68,7 @@ if ($AppNameReg.count -gt $PackageVersions.count) {
     if (!(Test-Path $LogFolder)) {
         New-Item -ItemType Directory -Force -Path $logfolder
     }
-    $FileName = (($RegFilters).String[0]) -Replace "[*]", ""
+    $FileName = (($AppNameReg).DisplayName[0]) -Replace "[*]", ""
     $LogFile = "$LogFolder\$FileName.log"
     $DateTime = (Get-Date)
     Clear-Content $LogFile -ErrorAction Ignore
