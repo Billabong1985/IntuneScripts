@@ -14,6 +14,7 @@ Use the following parameters to single out required app(s)
 -AppNameNotLike is configured to accept a single value or an array of strings
 
 <br>
+
 Example 1
 
     Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*"
