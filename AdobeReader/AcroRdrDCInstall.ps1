@@ -1,107 +1,80 @@
-#Define the app display name, use wildcards to catch any minor changes to name between versions
-$AppName = "*Adobe*Acrobat*"
-#Define the package version number
-[version]$PackageVersion = "24.2.21005"
-
-#Get app details from registry, add additional Where-Object qualifiers if more than one entry matches the display name
-$AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-$AppNameReg = $AppReg | Get-ItemProperty | Where-Object {($_.DisplayName -like $AppName) -and ($_.DisplayName -notlike "*Language*")}
-
-#Define the currently installed version number
-[version]$CurrentVersion = ($AppNameReg).DisplayVersion
-
-#Check whether the installed version is greater than or equal to the package and set variable
-if($currentversion -ge $packageversion)
-    {
-    $installed = "True"
-    }
-else
-    {
-    $installed = "False"
-    }
-
-#Check whether desktop shortcut has been deleted and set variable
-if(!(test-path "C:\Users\Public\Desktop\Adobe Acrobat.lnk"))
-    {
-    $shortcutdeleted = "True"
-    }
-else
-    {
-    $shortcutdeleted = "False"
-    }
-
-#Check whether all customisation registry keys are present and set correctly
-#Create array of reg keys
-$regkeys = @(
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown"
-    Name = "bToggleFTE"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown"
-    Name = "bAcroSuppressUpsell"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
-    Name = "bToggleAdobeDocumentServices"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
-    Name = "bToggleAdobeReview"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cServices"
-    Name = "bTogglePrefsSync"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cSharePoint"
-    Name = "bDisableSharePointFeatures"
-    Type = "DWORD"
-    Value = "1"
-    }
-[pscustomobject]@{
-    Key = "HKLM:\SOFTWARE\WOW6432Node\Policies\Adobe\Adobe Acrobat\DC\FeatureLockDown\cWebmailProfiles"
-    Name = "bDisableWebmail"
-    Type = "DWORD"
-    Value = "1"
-    }
+#Create the function
+function Get-AppReg {
+    #Define the parameters
+    param(
+        [Parameter(Mandatory = $true)][string]$AppNameLike,
+        [Parameter(Mandatory = $false)][string]$AppNameNotLike,
+        [Parameter(Mandatory = $false)][string]$PublisherLike,
+        [Parameter(Mandatory = $false)][string]$InstallPathEq
     )
 
-#Count how many reg keys are in the array
-$keycount = $regkeys.Count
-#Set the success count to an initial value of 0
-$successcount = 0
-#For each key value in the array, compare to the system registry and add 1 to the count if it matches
-foreach($reg in $regkeys)
-    {
-        if(((get-itemproperty -path $reg.key -name $reg.name -ErrorAction SilentlyContinue).($reg.name)) -eq $reg.value)
-        {
-        $successcount ++
-        }
-    }
+    #Create an array of objects for the registry search
+    $RegFilters = @(
+        [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "$AppNameLike" }
+        [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$AppNameNotLike" }
+        [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = "$PublisherLike" }
+        [pscustomobject]@{ Property = "InstallLocation"; Operator = "Eq"; String = "$InstallPathEq" }
+    )
 
-#If the success count matches the count of keys in the array, set variable as true
-if($successcount -eq $keycount)
-    {
-    $custom = "True"
-    }
-else
-    {
-    $custom = "False"
-    }
+    #Create a filter format template
+    $FilterTemplate = '$_.{0} -{1} "{2}"'
+    #Build a combined filter string using the format template, based on the $RegFilters variables with a String value
+    #-Replace '(.+)', '($0)' encapsulates each individual filter in parentheses, which is not strictly necessary, but can help readability
+    $AllFilters = $RegFilters.Where({ $_.String }).foreach({ $FilterTemplate -f $_.Property, $_.Operator, $_.String }) -Replace '(.+)', '($0)' -Join ' -and '
+    #Convert the string to a scriptblock
+    $AllFiltersScript = [scriptblock]::Create($AllFilters)
 
-#If no conditions are False, output a success result
-if("False" -notin @($installed,$shortcutdeleted,$custom))
-    {
-    Write-Host "Success"
-    }
+    #Get app details from registry and write output
+    $AllAppsReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+    $AppReg = @($AllAppsReg | Get-ItemProperty | Where-Object -FilterScript $AllFiltersScript)
+    Write-Output $AppReg
+}
+
+#Define the app registry entry by calling the function
+$AppNameReg = Get-AppReg -AppNameLike "*Adobe*Acrobat*" -PublisherLike "*Adobe*"
+
+#Define the package file
+$Package = "$PSScriptRoot\AcroRdrDC_MUI.exe"
+
+#Define log folder and file, clear content if it already exists
+$LogFolder = "C:\Software\AcrobatReader"
+if (!(Test-Path $LogFolder)) {
+    New-Item -ItemType Directory -Force -Path $LogFolder
+}
+$LogFile = "$LogFolder\AcroRdrInstallConfig.log"
+Clear-Content $LogFile -ErrorAction Ignore
+
+#If 0 or 1 app is returned, compare version number with the package version
+if ($AppNameReg.count -le 1) {
+    #Define the currently installed version number
+    [version]$CurrentVersion = ($AppNameReg).DisplayVersion
+    #Install Acrobat Reader if it is not already installed or current version is lower than package version
+    if (($null -eq $CurrentVersion) -or ($CurrentVersion -lt $PackageVersion)) {
+        start-process $Package -wait -ArgumentList "/sAll /rs /msi EULA_ACCEPT=YES"
+    }  
+}
+
+#If more than 1 app is returned from registry, write a log file with the details for review and break
+if ($AppNameReg.count -gt 1) {
+    $DateTime = (Get-Date)
+    Clear-Content $LogFile -ErrorAction Ignore
+    Add-Content $LogFile $DateTime
+    Add-Content $LogFile "More than 1 app filtered based on supplied criteria, version number cannot be confirmed"
+    Add-Content $LogFile "See list of returned registry keys below and refine filters to single out correct app"
+    $AppNameReg | ForEach-Object { $_ | Out-String } | Add-Content -Path $LogFile
+    Break
+}
+
+#Delete desktop shortcut if found
+if (Test-Path "C:\Users\Public\Desktop\Adobe Acrobat.lnk") {
+    Remove-Item "C:\Users\Public\Desktop\Adobe Acrobat.lnk"
+}
+
+#Import the registry editing function if it is not already loaded
+If (!(Get-Module -Name Set-Regkeys)) {
+    Import-Module "$PSScriptRoot\Set-Regkeys.psm1"
+}
+#Define the CSV file to import registry settings from
+$CsvFile = "$PSScriptRoot\regkeys.csv"
+#Run the function, passing the defined CSV file
+Set-RegKeys -CsvImport $CsvFile -LogResults $LogFile
