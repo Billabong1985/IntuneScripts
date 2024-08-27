@@ -31,7 +31,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*")
+$AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
 
 #Define the package file
 $Package = "$PSScriptRoot\AcroRdrDC_MUI.exe"
