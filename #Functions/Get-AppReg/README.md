@@ -4,9 +4,9 @@ HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 
 Use the following parameters to single out required app(s)
 
-[Mandatory] -AppNameLike
+[Mandatory] `-AppNameLike`
 
-[Optional] -AppNameNotLike, -PublisherLike, -InstallPathEq
+[Optional] `-AppNameNotLike`, `-PublisherLike`, `-InstallPathEq`
 
 Like and NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name, 
 e.g. `-AppNameLike "*Adobe*Acrobat*"`
