@@ -9,4 +9,4 @@ Use the following parameters to single out required app(s)
 [Optional] -AppNameNotLike, -PublisherLike, -InstallPathEq
 
 Like and NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name, 
-e.g. -AppNameLike '"*Adobe*Acrobat*"'
+e.g. -AppNameLike `"*Adobe*Acrobat*"`
