@@ -12,16 +12,17 @@ Use the following parameters to single out required app(s)
 <br>
 -Like and -NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
 -AppNameNotLike is configured to accept a single value or an array of strings
+When called, the function should be encapsulated in an array to account for multiple results
 <br>
 <br>
 Example 1
 
-    Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*"
+    $AppNameReg = @(Get-AppReg -AppNameLike "*Remote*Desktop*" -PublisherLike "*Microsoft*")
 
 Example 2
 
-    Get-AppReg -AppNameLike "*Dropbox" -AppNameNotLike "*Helper*"
+    $AppNameReg = @(Get-AppReg -AppNameLike "*Dropbox" -AppNameNotLike "*Helper*")
 
 Example 3
 
-    Get-AppReg -AppNameLike "*Acrobat*Acrobat*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*")
+    $AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*Acrobat*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
