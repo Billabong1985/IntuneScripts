@@ -12,8 +12,8 @@ function Get-AppReg {
         [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = $AppNameLike }
         [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = $PublisherLike }
     )
-    foreach($Pattern in $AppNameNotLike) {
-        $RegFilters += [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$Pattern" }
+    foreach($String in $AppNameNotLike) {
+        $RegFilters += [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$String" }
     }
 
     #Create a filter format template
