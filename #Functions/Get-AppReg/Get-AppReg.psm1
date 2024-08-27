@@ -1,5 +1,5 @@
-#Create the function
 function Get-AppReg {
+    #Define the parameters
     param(
         [Parameter(Mandatory = $true)][string]$AppNameLike,
         [Parameter(Mandatory = $false)][string]$AppNameNotLike,
