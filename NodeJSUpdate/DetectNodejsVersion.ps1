@@ -1,27 +1,41 @@
+#Create the function
+function Get-AppReg {
+    #Define the parameters
+    param(
+        [Parameter(Mandatory = $true)][string]$AppNameLike,
+        [Parameter(Mandatory = $false)][string]$AppNameNotLike,
+        [Parameter(Mandatory = $false)][string]$PublisherLike,
+        [Parameter(Mandatory = $false)][string]$InstallPathEq
+    )
+
+    #Create an array of objects for the registry search
+    $RegFilters = @(
+        [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "$AppNameLike" }
+        [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "$AppNameNotLike" }
+        [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = "$PublisherLike" }
+        [pscustomobject]@{ Property = "InstallLocation"; Operator = "Eq"; String = "$InstallPathEq" }
+    )
+
+    #Create a filter format template
+    $FilterTemplate = '$_.{0} -{1} "{2}"'
+    #Build a combined filter string using the format template, based on the $RegFilters variables with a String value
+    #-Replace '(.+)', '($0)' encapsulates each individual filter in parentheses, which is not strictly necessary, but can help readability
+    $AllFilters = $RegFilters.Where({ $_.String }).foreach({ $FilterTemplate -f $_.Property, $_.Operator, $_.String }) -Replace '(.+)', '($0)' -Join ' -and '
+    #Convert the string to a scriptblock
+    $AllFiltersScript = [scriptblock]::Create($AllFilters)
+
+    #Get app details from registry and write output
+    $AllAppsReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
+    $AppReg = @($AllAppsReg | Get-ItemProperty | Where-Object -FilterScript $AllFiltersScript)
+    Write-Output $AppReg
+}
+
+#Define the app registry entry by calling the function
+$AppNameReg = Get-AppReg -AppNameLike "*node.js*"
+
 #Define the package version numbers
 $PackageVersions = @("18.20.2", "20.12.2")
 $PackageVersions = $PackageVersions.ForEach{ [version]$_ }
-#Define the app properties to filter from registry use partial wildcards to catch any minor variations on display names
-#Unused properties should be set to "" or $null to exclude them from the filter string, or delete the pscustomobject line
-#In most cases the DisplayName -like property will be sufficient, additional properties can be used for apps that can't be singled out with that alone
-$RegFilters = @(
-    [pscustomobject]@{ Property = "DisplayName"; Operator = "Like"; String = "*Node*JS*" }
-    [pscustomobject]@{ Property = "DisplayName"; Operator = "NotLike"; String = "" }
-    [pscustomobject]@{ Property = "Publisher"; Operator = "Like"; String = "" }
-    [pscustomobject]@{ Property = "InstallLocation"; Operator = "Eq"; String = "" }
-)
-
-#Create a filter format template
-$FilterTemplate = '$_.{0} -{1} "{2}"'
-#Build a combined filter string using the format template, based on the $RegFilters variables with a String value
-#-Replace '(.+)', '($0)' encapsulates each individual filter in parentheses, which is not strictly necessary, but can help readability
-$AllFilters = $RegFilters.Where({ $_.String }).foreach({ $FilterTemplate -f $_.Property, $_.Operator, $_.String }) -Replace '(.+)', '($0)' -Join ' -and '
-#Convert the string to a scriptblock
-$AllFiltersScript = [scriptblock]::Create($AllFilters)
-
-#Get app details from registry
-$AppReg = Get-ChildItem -Path HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall, HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
-$AppNameReg = @($AppReg | Get-ItemProperty | Where-Object -FilterScript $AllFiltersScript)
 
 #If no more apps are returned than the number of specified versions, compare version numbers with the corresponding package versions
 if (($AppNameReg.count -gt 0) -and ($AppNameReg.count -le $PackageVersions.count)) {
@@ -35,15 +49,15 @@ if (($AppNameReg.count -gt 0) -and ($AppNameReg.count -le $PackageVersions.count
         $MatchingAppVersion = $PackageVersions | Where-Object { $_.Major -eq $CurrentVersionMajor }
         if (($null -ne $MatchingAppVersion) -and ($CurrentVersion -ge $MatchingAppVersion)) {
             $InstallComplete += [PSCustomObject]@{ Version = $MatchingAppVersion; Installed = "True" }
-            }
+        }
         if (($null -ne $MatchingAppVersion) -and ($CurrentVersion -lt $MatchingAppVersion)) {
             $InstallComplete += [PSCustomObject]@{ Version = $MatchingAppVersion; Installed = "False" }
-            }
         }
     }
+}
 
 #If at least 1  install has been detected and the version number is greater than or equal to the specified package version(s), write to host and exit 0
-If(($null -ne $InstallComplete)-and ("False" -notin $InstallComplete.Installed)) {
+If (($null -ne $InstallComplete) -and ("False" -notin $InstallComplete.Installed)) {
     Write-Host Installed
     Exit 0
 }
