@@ -37,13 +37,12 @@ foreach($App in $AppNameReg)
     $MSI = "MsiExec.exe"
     if($Uninstall -match $MSI)
         {
-        $Split = ($Uninstall -split '{') | Where-Object { $_.Trim() -ne "" }
-        $Arguments = "{"+$Split[1]
-        Start-Process $MSI -Wait -ArgumentList "/x $Arguments /qn"
+        $Identifier = $Uninstall  | Select-String -Pattern "\{[A-F0-9-]+\}" -AllMatches | ForEach-Object { $_.Matches.Value }
+        Start-Process $MSI -Wait -ArgumentList "/x $Identifier /qn"
         }
     else 
         {
-        $Split = ($Uninstall -split '"').Trim() | Where-Object { $_.Trim() -ne "" }
-        Start-Process $Split[0] -Wait -ArgumentList $Split[1]
+        $SplitString = ($Uninstall -split '"').Trim() | Where-Object { $_.Trim() -ne "" }
+        Start-Process $SplitString[0] -Wait -ArgumentList $SplitString[1]
         }
     }
