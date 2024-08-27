@@ -1,5 +1,6 @@
 function Set-Regkeys
 {
+#Define the parameters
 param(
     [Parameter(Mandatory=$true)]
     [string]$CsvImport,
