@@ -14,7 +14,7 @@ Use the following parameters to single out required app(s)
 <br>
 -AppNameNotLike is configured to accept a single value or an array of strings
 <br>
-When called, the function should be encapsulated in an array to allow the results to be indexed
+**When called, the function should be encapsulated in an array to allow the results to be indexed**
 <br>
 <br>
 Example 1
