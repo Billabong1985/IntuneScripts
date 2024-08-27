@@ -4,14 +4,16 @@ HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 <br>
 <br>
 Use the following parameters to single out required app(s)
-
+<br>
 [Mandatory] `-AppNameLike`
-
+<br>
 [Optional] `-AppNameNotLike`, `-PublisherLike`
 <br>
 <br>
 -Like and -NotLike parameters can use wildcards to cover any uncertainties or variations in the app display name
+<br>
 -AppNameNotLike is configured to accept a single value or an array of strings
+<br>
 When called, the function should be encapsulated in an array to account for multiple results
 <br>
 <br>
