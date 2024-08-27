@@ -3,8 +3,8 @@ function Get-AppReg {
     #Define the Parameters
     param(
         [Parameter(Mandatory = $true)][string]$AppNameLike,
-        [Parameter(Mandatory = $false)][string[]]$AppNameNotLike,
-        [Parameter(Mandatory = $false)][string]$PublisherLike
+        [Parameter(Mandatory = $false)][string]$PublisherLike,
+        [Parameter(Mandatory = $false)][string[]]$AppNameNotLike
     )
 
     #Create an array of objects for the registry search
