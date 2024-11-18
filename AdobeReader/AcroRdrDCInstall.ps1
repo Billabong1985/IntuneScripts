@@ -34,7 +34,9 @@ function Get-AppReg {
 $AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
 
 #Define the package file
-$Package = "$PSScriptRoot\AcroRdrDC_MUI.exe"
+$Package = Get-ChildItem -Path "$PSScriptRoot" -Filter "AcroRdrDC*.exe"
+$Arguments = "/sAll /rs /msi EULA_ACCEPT=YES"
+$PackageVersion = (Get-Item $Package).VersionInfo.FileVersion
 
 #Define log folder and file, clear content if it already exists
 $LogFolder = "C:\Software\AcrobatReader"
@@ -50,7 +52,7 @@ if ($AppNameReg.count -le 1) {
     [version]$CurrentVersion = ($AppNameReg).DisplayVersion
     #Install Acrobat Reader if it is not already installed or current version is lower than package version
     if (($null -eq $CurrentVersion) -or ($CurrentVersion -lt $PackageVersion)) {
-        start-process $Package -wait -ArgumentList "/sAll /rs /msi EULA_ACCEPT=YES"
+        start-process $Package -wait -ArgumentList $Arguments
     }  
 }
 
