@@ -1,4 +1,4 @@
-This script is for deployment of the offline installer of Adobe Reader found at the below URL. This was written for Intune but should require minimal modification for other deployment methods. The file name is defined at the top of the install script, so either file or script should be updated so they match
+This script is for deployment of the offline installer of Adobe Reader found at the below URL. This was written for Intune but should require minimal modification for other deployment methods. The downloaded file name is usually in the format "AcroRdrDC**VERSION**_MUI.exe", the $Package variable should pick this up but check in case name format has changed
 <br>
 https://get.adobe.com/uk/reader/enterprise/
 <br>
