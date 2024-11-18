@@ -12,7 +12,7 @@
 #                                                                                    #
 # It also assumes that the "IntuneWinAppUtil.exe" file is in the root of the folder  #
 #                                                                                    #
-# All packages will be saved to a 'Package' folder under the respective app folder    #
+# All packages will be saved to a 'Package' folder under the respective app folder   #
 #                                                                                    #
 ######################################################################################
 
