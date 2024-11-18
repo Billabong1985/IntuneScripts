@@ -1,5 +1,6 @@
 This function pulls app details from the following registry keys and outputs the results. It must be run in 64bit context to ensure both keys are treated separately
 <br>
+<br>
 HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
 HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 <br>
