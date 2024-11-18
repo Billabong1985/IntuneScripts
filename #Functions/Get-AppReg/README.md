@@ -2,6 +2,7 @@ This function pulls app details from the following registry keys and outputs the
 <br>
 <br>
 HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall
+<br>
 HKLM:\SOFTWARE\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall
 <br>
 <br>
