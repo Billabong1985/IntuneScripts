@@ -4,7 +4,7 @@ $ScriptVersion = "V1.0"
 
 #Define variables
 $TaskName = "TaskName"
-$ScriptFolder = "C:\Software\TaskName"
+$ScriptFolder = "C:\Software\TaskFolder"
 $ScriptFile = "$ScriptFolder\TaskScript.ps1"
 
 #Get the description of the scheduled task, this should be the version number
