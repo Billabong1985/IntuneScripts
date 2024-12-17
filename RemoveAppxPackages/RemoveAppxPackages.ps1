@@ -13,7 +13,8 @@ if (!(Test-Path $LogFolder)) {
 Clear-Content $LogFile -ErrorAction Ignore
 
 #Create search strings array for apps to remove
-$packages = @("people",
+$packages = @(
+    "people",
     "xbox",
     "gaming",
     "phone",
