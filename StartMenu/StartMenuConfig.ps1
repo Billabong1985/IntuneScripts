@@ -1,11 +1,9 @@
-###################################################################
-#                                                                 #
-# Configures Windows start menu layouts by editing registry       #
-#                                                                 #
-# Uses a custom function to import a registry key array from      #
-# a csv file, then create/set the key values as necessary         #
-#                                                                 #
-###################################################################
+<#
+Configures Windows start menu layouts by editing registry
+
+Uses a custom function to import a registry key array from
+a csv file, then create/set the key values as necessary
+#>
 
 #Set variables
 $WinVer = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
