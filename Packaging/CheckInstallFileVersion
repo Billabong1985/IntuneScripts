@@ -1,10 +1,8 @@
-########################################################
-#                                                      #
-# Prompts for a file within a specified  folder tree   #
-#                                                      #
-# Returns the file version number of the file selected #
-#                                                      #
-########################################################
+<#
+Prompts for a file within a specified  folder tree
+
+Returns the file version number of the file selected
+#>
 
 # Set the source folder
 $sourcefolder = "$ENV:UserProfile\Axian Dropbox\IT\Software\Scripts\packaging"
