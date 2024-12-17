@@ -1,20 +1,18 @@
-######################################################################################
-#                                                                                    #
-# Streamlines Intune app packaging by prompting for a source file then running the   #
-# packaging utility on the selected file                                             #
-#                                                                                    #
-# $packagingfolder variable must be manually set to the source of the folders/files  #
-# All other variables are dynamic                                                    #
-#                                                                                    #
-# This script assumes folder structure is organised into named app folders with a    #
-# subfolder named 'Source' under each one which contains installation file(s).       #
-# All folders and subfolders should use names which do NOT include spaces            #
-#                                                                                    #
-# It also assumes that the "IntuneWinAppUtil.exe" file is in the root of the folder  #
-#                                                                                    #
-# All packages will be saved to a 'Package' folder under the respective app folder   #
-#                                                                                    #
-######################################################################################
+<#
+Streamlines Intune app packaging by prompting for a source file then running the
+packaging utility on the selected file
+
+$packagingfolder variable must be manually set to the source of the folders/files
+All other variables are dynamic
+
+This script assumes folder structure is organised into named app folders with a
+subfolder named 'Source' under each one which contains installation file(s).
+All folders and subfolders should use names which do NOT include spaces
+
+It also assumes that the "IntuneWinAppUtil.exe" file is in the root of the folder
+
+All packages will be saved to a 'Package' folder under the respective app folder
+#>
 
 
 #Set the location of the top level packaging folder
