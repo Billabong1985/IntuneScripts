@@ -38,18 +38,15 @@ function Set-RegKeys {
             $RegCheck = ((Get-ItemProperty -Path $Reg.Key -Name $Reg.Name).($Reg.Name))
             #If reg entry is present and matches required value
             if (($null -ne $RegCheck) -and ($RegCheck -eq $Reg.Value)) {
-                $DateTime = (Get-Date)
-                Add-Content $LogResults "$DateTime - $Reg present and set to correct value"
+                Add-Content $LogFile "$(Get-Date): $Reg present and set to correct value"
             }
             #If reg entry is present but does NOT match required value
             if (($null -ne $RegCheck) -and ($RegCheck -ne $Reg.Value)) {
-                $DateTime = (Get-Date)
-                Add-Content $LogResults "$DateTime - $Reg present but set to incorrect value"
+                Add-Content $LogFile "$(Get-Date): $Reg present but set to incorrect value"
             }
             #If reg entry is not present
             if ($null -eq $RegCheck) {
-                $DateTime = (Get-Date)
-                Add-Content $LogResults "$DateTime - $Reg not present"
+                Add-Content $LogFile "$(Get-Date): $Reg not present"
             }
         }
     }
