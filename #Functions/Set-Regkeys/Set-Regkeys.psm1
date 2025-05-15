@@ -14,15 +14,15 @@ function Set-RegKeys {
     foreach ($Reg in $RegKeys) {
         #If the reg key does not already exist, create it
         if (!(Get-Item -Path $Reg.Key -ErrorAction SilentlyContinue)) {
-            New-Item -Path $Reg.Key
+            New-Item -Path $Reg.Key -Force
         }
         #If the reg value does not already exist, create it
         if (!(Get-ItemProperty -Path $Reg.Key -Name $Reg.Name -ErrorAction SilentlyContinue)) {
-            New-ItemProperty -Path $Reg.Key -Name $Reg.Name -Value $Reg.Value  -PropertyType $Reg.Type
+            New-ItemProperty -Path $Reg.Key -Name $Reg.Name -Value $Reg.Value  -PropertyType $Reg.Type -Force
         }
         #If the existing reg value does not match the array, update it
         if (((Get-ItemProperty -Path $Reg.Key -Name $Reg.Name).($Reg.Name)) -ne $Reg.Value) {
-            Set-ItemProperty -Path $Reg.Key -Name $Reg.Name -Value $Reg.Value
+            Set-ItemProperty -Path $Reg.Key -Name $Reg.Name -Value $Reg.Value -Force
         }
     }
 
