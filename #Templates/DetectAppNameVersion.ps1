@@ -1,3 +1,18 @@
+#Variables here to be passed through to the script below the function
+
+#Define the registry search strings, hash out any that are not needed
+$AppNameSearchString = '"*App*Name*"'
+#$AppNameSearchExcludeString = '@("*Exclude*","*Exclude2*")'
+$PublisherSearchString = '"*Publisher*"'
+
+#Define the command to pass to the function, remove any unused parts
+#$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -AppNameNotLike $AppNameSearchExcludeString -PublisherLike $PublisherSearchString)"
+$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -PublisherLike $PublisherSearchString)"
+
+#Define the package version
+[version]$PackageVersion = "1.0.0"
+#End of variables to be changed
+
 #Create the function
 function Get-AppReg {
     #Define the Parameters
@@ -31,9 +46,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function. -AppNameNotLike is set up as an array and can accept multiple strings
-$AppNameReg = @(Get-AppReg -AppNameLike "*App*Name*" -AppNameNotLike @("*Exclude*","*Exclude2*") -PublisherLike "*Publisher*")
-#Define the package version
-[version]$PackageVersion = "1.0.0"
+$AppNameReg = @(Invoke-Expression $GetAppRegCommand)
 
 #If 1 app is returned, compare it's version number with the package version
 if ($AppNameReg.count -eq 1) {
