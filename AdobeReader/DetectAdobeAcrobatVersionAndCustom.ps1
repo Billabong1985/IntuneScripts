@@ -1,3 +1,23 @@
+#Variables here to be passed through to the script below the function
+#Define a log file, clear it if it already exists
+$LogFolder = "C:\Software\AppVersionDetection"
+if (!(Test-Path $LogFolder)) {
+    New-Item -ItemType Directory -Force -Path $logfolder
+}
+$LogFile = "$LogFolder\AdobeAcrobat.log"
+
+#Define the registry search strings, hash out any that are not needed
+$AppNameSearchString = '"*Acrobat*"'
+$AppNameSearchExcludeString = '@("*Refresh*Manager*","*Customization*Wizard*")'
+$PublisherSearchString = '"*Adobe*"'
+
+#Define the command to pass to the function, remove any unused parts
+$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -AppNameNotLike $AppNameSearchExcludeString -PublisherLike $PublisherSearchString)"
+
+#Define the package version
+[version]$PackageVersion = "24.4.20220"
+#End of variables to be changed
+
 #Create the function
 function Get-AppReg {
     #Define the Parameters
@@ -31,17 +51,8 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
-#Define the package version
-[version]$PackageVersion = "24.2.21005"
-
-#Define a log file, clear it if it already exists
-$LogFolder = "C:\Software\AppVersionDetection"
-if (!(Test-Path $LogFolder)) {
-    New-Item -ItemType Directory -Force -Path $logfolder
-}
-$LogFile = "$LogFolder\AdobeAcrobat.log"
-Clear-Content $LogFile -ErrorAction Ignore
+#Define the app registry entry by calling the function. -AppNameNotLike is set up as an array and can accept multiple strings
+$AppNameReg = @(Invoke-Expression $GetAppRegCommand)
 
 #If 1 app is returned, or none, compare version number with the package version
 if ($AppNameReg.Count -le 1) {
@@ -59,10 +70,8 @@ if ($AppNameReg.Count -le 1) {
 #If more than 1 app is returned from registry, write to log file with the details for review
 if ($AppNameReg.Count -gt 1) {
     $Installed = $false
-    $DateTime = (Get-Date)
-    Add-Content $LogFile $DateTime
-    Add-Content $LogFile "More than 1 app filtered based on supplied criteria, version number cannot be confirmed"
-    Add-Content $LogFile "See list of returned registry keys below and refine filters to single out correct app"
+    Add-Content $LogFile "$(Get-Date): More than 1 app filtered based on supplied criteria, version number cannot be confirmed"
+    Add-Content $LogFile "$(Get-Date): returned registry keys below and refine filters to single out correct app"
     $AppNameReg | ForEach-Object { $_ | Out-String } | Add-Content -Path $LogFile
 }
 
@@ -94,6 +103,8 @@ $SuccessCount = 0
 foreach ($Reg in $RegKeys) {
     if (((Get-ItemProperty -path $Reg.Key -name $Reg.Name -ErrorAction SilentlyContinue).($Reg.Name)) -eq $Reg.Value) {
         $SuccessCount ++
+    } else {
+        Add-Content $LogFile "$(Get-Date): Registry key `"$($Reg.Key)\$($Reg.Name)`" not found or set to wrong value"
     }
 }
 
@@ -123,8 +134,7 @@ else {
         }
     }
     if ($FalseResults.count -ge 1) {
-        $DateTime = (Get-Date)
-        Add-Content $LogFile "$DateTime - The following checks failed: $($FalseResults -join ', ')"
+        Add-Content $LogFile "$(Get-Date): The following checks failed: $($FalseResults -join ', ')"
     }
     Exit 1
 }
