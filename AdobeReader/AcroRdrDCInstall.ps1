@@ -1,3 +1,26 @@
+#Variables here to be passed through to the script below the function
+#Define log folder and file, clear content if it already exists
+$LogFolder = "C:\Software\AcrobatReader"
+if (!(Test-Path $LogFolder)) {
+    New-Item -ItemType Directory -Force -Path $LogFolder
+}
+$LogFile = "$LogFolder\AcroRdrInstallConfig.log"
+Clear-Content $LogFile -ErrorAction Ignore
+
+#Define the registry search strings, hash out any that are not needed
+$AppNameSearchString = '"*Acrobat*"'
+$AppNameSearchExcludeString = '@("*Refresh*Manager*", "*Customization*Wizard*")'
+$PublisherSearchString = '"*Adobe*"'
+
+#Define the command to pass to the function, remove any unused parts
+$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -AppNameNotLike $AppNameSearchExcludeString -PublisherLike $PublisherSearchString)"
+
+#Define the package file
+$Package = Get-ChildItem -Path "$PSScriptRoot" -Filter "AcroRdrDC*.exe"
+$Arguments = "/sAll /rs /msi EULA_ACCEPT=YES"
+$PackageVersion = (Get-Item $Package).VersionInfo.FileVersion
+#End of variables to be changed
+
 #Create the function
 function Get-AppReg {
     #Define the Parameters
@@ -31,20 +54,7 @@ function Get-AppReg {
 }
 
 #Define the app registry entry by calling the function
-$AppNameReg = @(Get-AppReg -AppNameLike "*Acrobat*" -PublisherLike "*Adobe*" -AppNameNotLike @("*Refresh*Manager*","*Customization*Wizard*"))
-
-#Define the package file
-$Package = Get-ChildItem -Path "$PSScriptRoot" -Filter "AcroRdrDC*.exe"
-$Arguments = "/sAll /rs /msi EULA_ACCEPT=YES"
-$PackageVersion = (Get-Item $Package).VersionInfo.FileVersion
-
-#Define log folder and file, clear content if it already exists
-$LogFolder = "C:\Software\AcrobatReader"
-if (!(Test-Path $LogFolder)) {
-    New-Item -ItemType Directory -Force -Path $LogFolder
-}
-$LogFile = "$LogFolder\AcroRdrInstallConfig.log"
-Clear-Content $LogFile -ErrorAction Ignore
+$AppNameReg = @(Invoke-Expression $GetAppRegCommand)
 
 #If 0 or 1 app is returned, compare version number with the package version
 if ($AppNameReg.count -le 1) {
@@ -53,7 +63,7 @@ if ($AppNameReg.count -le 1) {
     #Install Acrobat Reader if it is not already installed or current version is lower than package version
     if (($null -eq $CurrentVersion) -or ($CurrentVersion -lt $PackageVersion)) {
         start-process $Package -wait -ArgumentList $Arguments
-    }  
+    }
 }
 
 #If more than 1 app is returned from registry, write a log file with the details for review and break
