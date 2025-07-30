@@ -1,5 +1,5 @@
 <#
-StartAppName Script V1.1
+StartAppName Script V1.0
 #>
 
 #Create the function
