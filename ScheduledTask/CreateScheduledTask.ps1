@@ -1,14 +1,14 @@
 #Set variables for folders and files. TaskScriptVersion value needs to be commented in the task script file
 $LogFolder = "C:\Software\TaskFolder"
 $LogFile = "$LogFolder\CreateScheduledTask.log"
-$TaskScript = "TaskScript.ps1"
+$TaskScript = "StartAppName.ps1"
 $TaskScriptVersion = "v1.0"
 
 #Set Variables for the task
-$TaskName = "TaskName"
+$TaskName = "StartAppName"
 $TaskDescription = "V1.0"
 $ExistingTask = (Get-ScheduledTask -TaskName $TaskName -ErrorAction Ignore)
-$Trigger = New-ScheduledTaskTrigger -Daily -At 10am
+$Trigger = New-ScheduledTaskTrigger -Daily -At 8am
 #Username = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object UserName).UserName
 #Principal = New-ScheduledTaskPrincipal -UserId $username
 $Principal = New-ScheduledTaskPrincipal -GroupId Users
