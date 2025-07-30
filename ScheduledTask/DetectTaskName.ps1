@@ -3,7 +3,7 @@ $TaskVersion = "V1.0"
 $ScriptVersion = "V1.0"
 
 #Define variables
-$TaskName = "TaskName"
+$TaskName = "StartAppName"
 $ScriptFolder = "C:\Software\TaskFolder"
 $ScriptFile = "$ScriptFolder\TaskScript.ps1"
 
