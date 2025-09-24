@@ -1,8 +1,10 @@
-$logfile = "C:\Software\StartMenu\StartMenuConfig.log"
-$failure = "incorrect value","not present"
-$status = Get-Content $logfile | select-string ($failure)
+$CurrentUser = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty UserName).Split('\')[-1]
+$LogFolder = "C:\Software\StartMenu"
+$LogFile = "$LogFolder\StartMenuConfig$CurrentUser.log"
+$Failure = "incorrect value","not present"
+$Status = Get-Content $LogFile | select-string ($Failure)
 
-if($null -eq $status)
+if($null -eq $Status)
     {
     write-host Success
     }
