@@ -7,8 +7,9 @@ a csv file, then create/set the key values as necessary
 
 #Set variables
 $WinVer = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
+$CurrentUser = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty UserName).Split('\')[-1]
 $LogFolder = "C:\Software\StartMenu"
-$LogFile = "$LogFolder\StartMenuConfig.log"
+$LogFile = "$LogFolder\StartMenuConfig$CurrentUser.log"
 
 #Clear content from the log folder if it already exists
 Clear-Content $LogFile -ErrorAction Ignore
