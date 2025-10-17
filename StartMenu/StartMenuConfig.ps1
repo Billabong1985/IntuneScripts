@@ -9,18 +9,16 @@ a csv file, then create/set the key values as necessary
 $WinVer = (Get-CimInstance -ClassName Win32_OperatingSystem).Caption
 $CurrentUser = (Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty UserName).Split('\')[-1]
 $LogFolder = "C:\Software\StartMenu"
-$LogFile = "$LogFolder\StartMenuConfig$CurrentUser.log"
 
-#Clear content from the log folder if it already exists
-Clear-Content $LogFile -ErrorAction Ignore
-
-#Define the CSV file to pass to the function if Windows version is 10
+#Define the log file and CSV file to pass to the function if Windows version is 10
 if ($WinVer -like '*Windows 10*') {
     $CsvFile = "$PSScriptRoot\win10regkeys.csv"
+    $LogFile = "$LogFolder\Win10StartMenuConfig$CurrentUser.log"
 }
-#Define the CSV file to pass to the function if Windows version is 11
+#Define the log file and CSV file to pass to the function if Windows version is 11
 if ($WinVer -like '*Windows 11*') {
     $CsvFile = "$PSScriptRoot\win11regkeys.csv"
+    $LogFile = "$LogFolder\Win11StartMenuConfig$CurrentUser.log"
 }
 
 #Import the registry editing function and pass the defined csv and log files to it
