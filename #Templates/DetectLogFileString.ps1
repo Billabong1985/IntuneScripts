@@ -15,12 +15,12 @@ $Search = Select-String -Path $LogFile -Pattern $SearchString
 # or the absense of strings indicating failure
 
 # OPTION 1 - If the search DID find the specified string(s) indicating success, change the flag to true
-If ($null -ne $StringSearch) {
+If ($null -ne $Search) {
     $Success = $true
 }
 
 #OPTION 2 - If the search DID NOT find the specified string(s) indicating failure, change the flag to true
-If ($null -eq $StringSearch) {
+If ($null -eq $Search) {
     $Success = $true
 }
 
