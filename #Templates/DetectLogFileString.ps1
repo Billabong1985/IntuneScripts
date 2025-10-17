@@ -11,7 +11,7 @@ $SearchString = "String A", "String B"
 # Search the log file for the expected string(s)
 $Search = Select-String -Path $LogFile -Pattern $SearchString
 
-# Choose one of the below depending on whether you searched for a string that indicate success,
+# Choose one of the below depending on whether you searched for a string that indicates success,
 # or the absense of strings indicating failure
 
 # OPTION 1 - If the search DID find the specified string(s) indicating success, change the flag to true
