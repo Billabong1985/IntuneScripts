@@ -6,6 +6,9 @@ to account for programs that use versioning in their installation folder paths
 
 For programs that do not use versioning in this way or do not return an installfolder variable,
 Remove the registry search function and manually set the $AppInstallPath variable
+
+If the registry search pulls an incomplete folder path to the executable, add the missing subfolders
+to the $Executable variable, e.g. $Executable = "\bin\x64\ApppName.exe"
 #>
 
 #Define the Process Name
