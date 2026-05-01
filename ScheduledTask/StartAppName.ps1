@@ -1,6 +1,31 @@
 <#
 StartAppName Script V1.0
+
+This uses a dynamic registry search to find the process's source folder
+to account for programs that use versioning in their installation folder paths
+
+For progams that do not use versioning in this way or do not return an installfolder variable,
+Remove the registry search function and manually set the $AppInstallPath variable
 #>
+
+#Define the Process Name
+$ProcessName = "ProcessName"
+#Define the process's executable
+$Executable = "AppName.exe"
+
+#Define the log file
+$LogFolder = "C:\Software\AppName"
+$LogFile = "$LogFolder\StartAppName.log"
+
+#Define the registry search strings, hash out any that are not needed
+$AppNameSearchString = '"*App*Name*"'
+#$AppNameSearchExcludeString = '@("*Exclude*","*Exclude2*")'
+$PublisherSearchString = '"*Publisher*"'
+
+#Define the command to pass to the function, remove any unused parts
+#$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -AppNameNotLike $AppNameSearchExcludeString -PublisherLike $PublisherSearchString)"
+$GetAppRegCommand = "(Get-AppReg -AppNameLike $AppNameSearchString -PublisherLike $PublisherSearchString)"
+#End of variables to be changed
 
 #Create the function
 function Get-AppReg {
@@ -34,14 +59,13 @@ function Get-AppReg {
     Write-Output $AppReg
 }
 
-#Define the installed path
-$AppInstallPath = (Get-AppReg -AppNameLike "*AppName*").InstallLocation
-#Define the program executable path
-$ExecutionPath = "$AppInstallPath\AppName.exe"
+#Define the app registry entry by calling the function. -AppNameNotLike is set up as an array and can accept multiple strings
+$AppNameReg = @(Invoke-Expression $GetAppRegCommand)
 
-#Define the log file
-$LogFolder = "C:\Software\AppName"
-$LogFile = "$LogFolder\StartAppName.log"
+#Define the installed path
+$AppInstallPath = $AppNameReg.InstallLocation
+#Define the program executable path
+$ExecutionPath = "$AppInstallPath\$Executable"
 
 #Check for log folder, create if it does not already exist
 if (!(Test-Path $LogFolder)) {
@@ -65,26 +89,26 @@ $FilteredContent = foreach ($line in $LogFileContent) {
 # Write the filtered content back to the log file
 $FilteredContent | Set-Content $LogFile
 
-#Check whether AppName is running, start it if not and write to log file
-If ($null -eq (Get-Process -Name "AppName" -ErrorAction SilentlyContinue)) {
+#Check whether ProcessName is running, start it if not and write to log file
+If ($null -eq (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)) {
     $DateTime = (Get-Date)
-    Add-Content $LogFile "$DateTime - AppName not running, attempting to start"
+    Add-Content $LogFile "$DateTime - $ProcessName not running, attempting to start"
     Start-Process $ExecutionPath
     $AttemptCount = 0
-    While (($null -eq (Get-Process -Name "AppName" -ErrorAction SilentlyContinue)) -and $AttemptCount -lt 6) {
+    While (($null -eq (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)) -and $AttemptCount -lt 6) {
         Start-Sleep 5
         $AttemptCount ++
     }
-    If ($null -ne (Get-Process -Name "AppName" -ErrorAction SilentlyContinue)) {
+    If ($null -ne (Get-Process -Name $ProcessName -ErrorAction SilentlyContinue)) {
         $DateTime = (Get-Date)
-        Add-Content $LogFile "$DateTime - AppName started successfully"
+        Add-Content $LogFile "$DateTime - $ProcessName started successfully"
     }
     Else {
         $DateTime = (Get-Date)
-        Add-Content $LogFile "$DateTime - AppName failed to start"
+        Add-Content $LogFile "$DateTime - $ProcessName failed to start"
     }
 }
 Else {
     $DateTime = (Get-Date)
-    Add-Content $LogFile "$DateTime - AppName already running"
+    Add-Content $LogFile "$DateTime - $ProcessName already running"
 }
