@@ -4,7 +4,7 @@ StartAppName Script V1.0
 This uses a dynamic registry search to find the process's source folder
 to account for programs that use versioning in their installation folder paths
 
-For progams that do not use versioning in this way or do not return an installfolder variable,
+For programs that do not use versioning in this way or do not return an installfolder variable,
 Remove the registry search function and manually set the $AppInstallPath variable
 #>
 
