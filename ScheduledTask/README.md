@@ -8,8 +8,8 @@ correctly detects the latest version
 
 Maintain single decimal version number convention (e.g. 1.5 OK, 1.4.5 NOT OK) for consistency
 
-If updating StartDropbox.ps1, version number must be changed in...
-<br>The comment at the top of the script being run
+If updating StartAppName.ps1, version number must be changed in...
+<br>The version comment at the top of StartAppName.ps1
 <br>The $TaskScriptVersion variable in CreateScheduledTask.ps1
 <br>The $ScriptVersion variable in DetectStartAppName.ps1
 <br>
