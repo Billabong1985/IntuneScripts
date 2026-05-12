@@ -37,10 +37,12 @@ $packages = @(
 )
 
 #Create exceptions array, for apps that match the package search strings 
-#but cannot be removed with this command and will always error
+#but cannot be removed with this command and will always error, or which
+#need to be excluded to avoid removing wanted apps such as Copilot
 $exceptions = @(
     "Microsoft.Windows.PeopleExperienceHost",
-    "Microsoft.XboxGameCallableUI"
+    "Microsoft.XboxGameCallableUI",
+    "Microsoft.MicrosoftOfficeHub"
 )
 
 Start-Transcript -Path $logfile
